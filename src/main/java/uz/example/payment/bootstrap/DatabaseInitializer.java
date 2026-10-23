@@ -13,11 +13,11 @@ public class DatabaseInitializer {
     private static final long RETRY_DELAY_MS = 3000L;
 
     public static void initialize() {
-        String host = getEnvOrDefault("DB_HOST", "localhost");
         String port = getEnvOrDefault("DB_PORT", "5432");
         String dbName = getEnvOrDefault("DB_NAME", "payment");
-        String user = getEnvOrDefault("DB_USER", "payment_user");
-        String password = getEnvOrDefault("DB_PASSWORD", "change_me");
+        String host = getRequiredEnv("DB_HOST");
+        String user = getRequiredEnv("DB_USER");
+        String password = getRequiredEnv("DB_PASSWORD");
 
         if (!DB_NAME.matcher(dbName).matches()) {
             throw new IllegalArgumentException("Invalid database name: " + dbName + ". Must match ^[a-zA-Z0-9_]+$");
@@ -30,7 +30,7 @@ public class DatabaseInitializer {
                 log.info("Connected to PostgreSQL system database on attempt {}", attempt);
                 ensureDatabaseExists(connection, dbName);
                 return;
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 log.warn("PostgreSQL is not ready yet (attempt {}/{}): {}", attempt, MAX_RETRIES, e.getMessage());
                 if (attempt == MAX_RETRIES) {
                     throw new IllegalStateException(
@@ -42,7 +42,7 @@ public class DatabaseInitializer {
 
     }
 
-    private static void ensureDatabaseExists(Connection connection, String dbName) throws Exception {
+    private static void ensureDatabaseExists(Connection connection, String dbName) throws SQLException {
         String checkSql = "SELECT 1 FROM pg_database WHERE datname = ?";
         try (PreparedStatement ps = connection.prepareStatement(checkSql)) {
             ps.setString(1, dbName);
@@ -59,6 +59,15 @@ public class DatabaseInitializer {
             statement.executeUpdate(createSql);
             log.info("Database '{}' created successfully.", dbName);
         }
+    }
+
+    private static String getRequiredEnv(String key) {
+        String value = System.getenv(key);
+
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException("Environment variable is not specified");
+        }
+        return value;
     }
 
     private static String getEnvOrDefault(String key, String defaultValue) {
