@@ -55,8 +55,8 @@ public class DatabaseInitializer {
         }
 
         String createSql = "CREATE DATABASE \"" + dbName + "\"";
-        try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(createSql);
+        try (Statement statement = connection.createStatement()) {
+            statement.executeUpdate(createSql);
             log.info("Database '{}' created successfully.", dbName);
         }
     }
@@ -74,5 +74,4 @@ public class DatabaseInitializer {
             throw new IllegalStateException("Database initialization interrupted", ie);
         }
     }
-
 }
