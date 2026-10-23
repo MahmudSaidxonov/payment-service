@@ -1,11 +1,14 @@
+server:
+  port: ${SERVER_PORT:8080}
+
 spring:
   application:
     name: payment
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:payment}
-    username: ${DB_USER:payment_user}
-    password: ${DB_PASSWORD:change_me}
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT:5432}/${DB_NAME:payment}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   jpa:
     show-sql: true
     hibernate:
@@ -13,6 +16,8 @@ spring:
     properties:
       hibernate:
         format_sql: false
+        jdbc:
+          time_zone: UTC
 
 management:
   endpoints:
@@ -26,3 +31,9 @@ management:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+    access-ttl: ${JWT_ACCESS_TTL:900}
+    refresh-ttl: ${JWT_REFRESH_TTL:604800}
