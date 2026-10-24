@@ -39,8 +39,7 @@ public class DatabaseInitializer {
                 sleep();
             }
         }
-
-    }
+}
 
     private static void ensureDatabaseExists(Connection connection, String dbName) throws SQLException {
         String checkSql = "SELECT 1 FROM pg_database WHERE datname = ?";
