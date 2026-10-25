@@ -20,7 +20,7 @@ public class ErrorCodeService {
 
     public List<ErrorCodeResponse> getAll(String categoryStr, String langParam, String acceptLanguage) {
         String lang = resolveLanguage(langParam, acceptLanguage);
-        List<ErrorCode> codes = List.of();
+        List<ErrorCode> codes;
 
         if (categoryStr != null && !categoryStr.isBlank()) {
             ErrorCategory category = parseCategory(categoryStr);
@@ -64,6 +64,11 @@ public class ErrorCodeService {
         return "uz";
     }
 
+    public ErrorCode getEntityByCode(int code) {
+        return errorCodeRepository.findById(code)
+                .orElseThrow(() -> new IllegalStateException("Error code not found in DB: " + code));
+    }
+
     private ErrorCategory parseCategory(String categoryStr) {
         try {
             return ErrorCategory.valueOf(categoryStr.trim().toUpperCase());
@@ -73,16 +78,11 @@ public class ErrorCodeService {
     }
 
     private ErrorCodeResponse toDto(ErrorCode ec, String lang) {
-        String message =  switch (lang) {
-            case "ru" -> ec.getMessageRu();
-            case "en" -> ec.getMessageEn();
-                default -> ec.getMessageUz();
-        };
         return new ErrorCodeResponse(
                 ec.getCode(),
                 ec.getCategory(),
                 ec.getHttpStatus(),
-                message
+                ec.getMessageByLang(lang)
         );
     }
 }

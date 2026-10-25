@@ -31,4 +31,11 @@ public class ErrorCode {
     @Column(name = "message_en", nullable = false)
     private String messageEn;
 
+    public String getMessageByLang(String lang) {
+        return switch (lang) {
+            case "ru" -> this.messageRu;
+            case "en" -> this.messageEn;
+            default -> this.messageUz;
+        };
+    }
 }

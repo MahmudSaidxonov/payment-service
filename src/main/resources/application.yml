@@ -37,3 +37,7 @@ app:
     secret: ${JWT_SECRET}
     access-ttl: ${JWT_ACCESS_TTL:900}
     refresh-ttl: ${JWT_REFRESH_TTL:604800}
+
+logging:
+  pattern:
+    level: "%5p [%thread] [traceId=%X{traceId}] %-5level %logger{36} - %msg%n"
