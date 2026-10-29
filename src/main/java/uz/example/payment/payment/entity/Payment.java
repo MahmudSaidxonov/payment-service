@@ -12,7 +12,20 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "payments")
+@Table(
+        name = "payments",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_payments_user_idempotency",
+                        columnNames = {"user_id", "idempotency_id"}
+                )
+        },
+        indexes = {
+                @Index(name = "idx_payments_user_created_at", columnList = "user_id, created_at DESC"),
+                @Index(name = "idx_payments_user_status_created_at", columnList = "user_id, status, created_at DESC"),
+                @Index(name = "idx_payments_status_created_at", columnList = "status, created_at")
+        }
+)
 @Getter
 @Setter
 @AllArgsConstructor
