@@ -51,8 +51,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         } catch (ExpiredJwtException e) {
             handlerExceptionResolver.resolveException(request, response, null, new BusinessException(1002));
+            return;
         } catch (JwtException | IllegalArgumentException e) {
             handlerExceptionResolver.resolveException(request, response, null, new BusinessException(1003));
+            return;
         }
         filterChain.doFilter(request, response);
     }
