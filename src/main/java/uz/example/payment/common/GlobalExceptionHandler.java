@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import uz.example.payment.errorcode.entity.ErrorCode;
 import uz.example.payment.errorcode.service.ErrorCodeService;
 
@@ -55,6 +56,12 @@ public class GlobalExceptionHandler {
         log.error("Unexpected internal server error on path={}", request.getRequestURI(), ex);
         return buildErrorResponse(9999, request, List.of());
     }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(NoResourceFoundException ex, HttpServletRequest request) {
+        return buildErrorResponse(9002, request, List.of());
+    }
+
 
     private ResponseEntity<ErrorResponse> buildErrorResponse (
             int code,

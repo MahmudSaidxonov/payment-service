@@ -1,4 +1,4 @@
-package uz.example.payment.controller;
+package uz.example.payment.errorcode.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

@@ -1,10 +1,7 @@
 package uz.example.payment.payment.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import uz.example.payment.auth.entity.User;
 
 import java.math.BigDecimal;
@@ -30,6 +27,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Payment {
 
     @Id
