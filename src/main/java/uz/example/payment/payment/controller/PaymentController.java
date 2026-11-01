@@ -51,4 +51,12 @@ public class PaymentController {
     ) {
         return paymentService.getUserPayments(userId, page, size, status);
     }
+
+    @PostMapping("/{id}/cancel")
+    public PaymentResponse cancelPayment(
+            @AuthenticationPrincipal Long userId,
+            @PathVariable UUID id
+    ) {
+        return paymentService.cancelPayment(userId, id);
+    }
 }

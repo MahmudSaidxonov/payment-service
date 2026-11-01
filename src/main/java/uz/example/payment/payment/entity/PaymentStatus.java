@@ -5,5 +5,13 @@ public enum PaymentStatus {
     PROCESSING,
     SUCCESS,
     FAILED,
-    CANCELED
+    CANCELED;
+
+    public boolean canTransitionTo(PaymentStatus next) {
+        return switch (this) {
+            case NEW -> next == PROCESSING || next == CANCELED;
+            case PROCESSING -> next == SUCCESS || next == FAILED;
+            case SUCCESS, FAILED, CANCELED -> false;
+        };
+    }
 }
