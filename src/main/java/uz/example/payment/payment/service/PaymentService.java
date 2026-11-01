@@ -41,6 +41,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final UserRepository userRepository;
     private final ErrorCodeService errorCodeService;
+    private final PaymentLifecycleService paymentLifecycleService;
 
     @Transactional
     public PaymentCreationResult createPayment(Long userId, String reqIdempotencyKey, CreatePaymentRequest request) {
@@ -151,6 +152,20 @@ public class PaymentService {
                 paymentPage.getTotalElements(),
                 paymentPage.getTotalPages()
         );
+    }
+
+    @Transactional
+    public PaymentResponse cancelPayment(Long userId, UUID paymentId) {
+        Payment payment = paymentRepository.findByIdAndUserIdForUpdate(paymentId, userId)
+                .orElseThrow(() -> new BusinessException(2006));
+        if (payment.getStatus() != PaymentStatus.NEW) {
+            throw new BusinessException(9001);
+        }
+
+        paymentLifecycleService.changeStatus(payment, PaymentStatus.CANCELED, null);
+        log.info("Payment canceled by user: id={}, userId={}", paymentId, userId);
+
+        return toDto(payment);
     }
 
 
