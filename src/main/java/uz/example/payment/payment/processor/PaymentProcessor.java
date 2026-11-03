@@ -21,7 +21,7 @@ public class PaymentProcessor {
 
     private final PaymentLifecycleService paymentLifecycleService;
 
-    @Scheduled(fixedDelay = 300000)
+    @Scheduled(fixedDelay = 3000)
     public void processNewPayments() {
         List<UUID> claimedIds = paymentLifecycleService.claimNewPayments(BATCH_SIZE);
         if (claimedIds.isEmpty()) {
