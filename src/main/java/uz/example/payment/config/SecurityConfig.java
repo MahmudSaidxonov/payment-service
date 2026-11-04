@@ -37,7 +37,8 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/api/v1/auth/**", "/api/v1/error-codes/**", "/actuator/health").permitAll()
+                        .requestMatchers("/api/v1/auth/**", "/api/v1/error-codes/**").permitAll()
+                        .requestMatchers("/actuator/health", "/actuator/prometheus").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
