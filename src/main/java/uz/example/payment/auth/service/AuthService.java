@@ -27,6 +27,7 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
+    private final LoginRateLimiter loginRateLimiter;
 
     @Value("${app.jwt.refresh-ttl}")
     private long refreshTtlSeconds;
@@ -51,6 +52,9 @@ public class AuthService {
 
     @Transactional
     public TokenResponse login(LoginRequest loginRequest) {
+
+        loginRateLimiter.checkRateLimit(loginRequest.username());
+
         User user = userRepository.findByUsername(loginRequest.username())
                 .orElseThrow(() -> new BusinessException(1001));
 
@@ -86,15 +90,15 @@ public class AuthService {
 
     private TokenResponse issueTokens(User user) {
         String accessToken = jwtService.generateAccessToken(user);
-//        String refreshTokenString = UUID.randomUUID().toString() + "-" + UUID.randomUUID();
         String refreshTokenString = UUID.randomUUID().toString();
 
-        RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setToken(refreshTokenString);
-        refreshToken.setUser(user);
-        refreshToken.setExpiresAt(Instant.now().plusSeconds(refreshTtlSeconds));
-        refreshToken.setUsed(false);
-        refreshToken.setCreatedAt(Instant.now());
+        RefreshToken refreshToken = RefreshToken.builder()
+                .token(refreshTokenString)
+                .user(user)
+                .expiresAt(Instant.now().plusSeconds(refreshTtlSeconds))
+                .used(false)
+                .createdAt(Instant.now())
+                .build();
 
         refreshTokenRepository.save(refreshToken);
 

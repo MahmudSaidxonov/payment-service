@@ -37,6 +37,8 @@ app:
     secret: ${JWT_SECRET}
     access-ttl: ${JWT_ACCESS_TTL:900}
     refresh-ttl: ${JWT_REFRESH_TTL:604800}
+  webhook:
+    url: ${WEBHOOK_URL:https://webhook.site/a2b02937-9b8d-4f39-ae82-3a6b06f2cef3}
 
 logging:
   pattern:
