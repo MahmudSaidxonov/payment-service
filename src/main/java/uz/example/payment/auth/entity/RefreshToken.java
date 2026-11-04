@@ -1,9 +1,7 @@
 package uz.example.payment.auth.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
@@ -11,7 +9,9 @@ import java.time.Instant;
 @Table(name = "refresh_tokens")
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class RefreshToken {
 
     @Id

@@ -24,6 +24,7 @@ public class PaymentLifecycleService {
 
     private final PaymentRepository paymentRepository;
     private final PaymentStatusHistoryRepository historyRepository;
+    private final WebhookService webhookService;
 
     @Transactional
     public List<UUID> claimNewPayments(int batchSize) {
@@ -54,6 +55,8 @@ public class PaymentLifecycleService {
         } else {
             changeStatus(payment, PaymentStatus.SUCCESS, null);
         }
+
+        webhookService.sendPaymentResultWebhook(payment);
     }
 
     public void changeStatus(Payment payment, PaymentStatus nextStatus, Integer errorCode) {
