@@ -38,8 +38,8 @@ app:
     access-ttl: ${JWT_ACCESS_TTL:900}
     refresh-ttl: ${JWT_REFRESH_TTL:604800}
   webhook:
-    url: ${WEBHOOK_URL:https://webhook.site/a2b02937-9b8d-4f39-ae82-3a6b06f2cef3}
+    url: ${WEBHOOK_URL:}
 
 logging:
   pattern:
-    level: "%5p [%thread] [traceId=%X{traceId}] %-5level %logger{36} - %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [traceId=%X{traceId}] %-5level %logger{36} - %msg%n"
