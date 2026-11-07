@@ -43,7 +43,7 @@ public class PaymentIntegrationTest {
         mockMvc.perform(get("/api/v1/error-codes")
                         .param("lang", "ru"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(17))
+                .andExpect(jsonPath("$.length()").value(19))
                 .andExpect(jsonPath("$[0].code").value(1001));
 
         mockMvc.perform(get("/api/v1/error-codes/2003")

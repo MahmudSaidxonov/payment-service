@@ -1,7 +1,7 @@
 package uz.example.payment.auth.service;
 
 import org.springframework.stereotype.Component;
-import uz.example.payment.common.RateLimitExceededException;
+import uz.example.payment.common.BusinessException;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -31,8 +31,7 @@ public class LoginRateLimiter {
             }
 
             if (counter.count >= MAX_ATTEMPTS) {
-                throw new RateLimitExceededException("Too many login attempts. Please wait 1 minute.");
-            }
+                throw new BusinessException(1006);            }
             counter.count++;
         }
     }

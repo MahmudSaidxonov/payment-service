@@ -45,6 +45,10 @@ public class ErrorCodeSeeder implements ApplicationRunner {
                         "Refresh token yaroqsiz yoki ishlatilgan",
                         "Refresh-токен недействителен или уже использован",
                         "Refresh token is invalid or already used"),
+                new ErrorCode(1006, ErrorCategory.AUTH, 429,
+                        "Kirish urinishlari soni oshib ketdi. 1 daqiqa kuting",
+                        "Слишком много попыток входа. Подождите 1 минуту",
+                        "Too many login attempts. Please wait 1 minute"),
 
                 new ErrorCode(2001, ErrorCategory.PAYMENT, 400,
                         "Summa noto'g'ri",
@@ -78,6 +82,10 @@ public class ErrorCodeSeeder implements ApplicationRunner {
                         "Idempotency-Key boshqa ma'lumot bilan ishlatilgan",
                         "Idempotency-Key уже использован с другими данными",
                         "Idempotency-Key already used with different payload"),
+                new ErrorCode(2009, ErrorCategory.PAYMENT, 409,
+                        "To'lovni hozirgi holatida bekor qilib bo'lmaydi",
+                        "Невозможно отменить платеж в текущем статусе",
+                        "Payment cannot be canceled in its current status"),
 
                 new ErrorCode(9001, ErrorCategory.COMMON, 400,
                         "Validatsiya xatosi",
