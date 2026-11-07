@@ -2,6 +2,9 @@ package uz.example.payment.bootstrap;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.*;
 import java.util.regex.Pattern;
 
@@ -13,6 +16,8 @@ public class DatabaseInitializer {
     private static final long RETRY_DELAY_MS = 3000L;
 
     public static void initialize() {
+        loadDotEnvIntoSystemProperties();
+
         String port = getEnvOrDefault("DB_PORT", "5432");
         String dbName = getEnvOrDefault("DB_NAME", "payment");
         String host = getRequiredEnv("DB_HOST");
@@ -61,7 +66,7 @@ public class DatabaseInitializer {
     }
 
     private static String getRequiredEnv(String key) {
-        String value = System.getenv(key);
+        String value = resolveValue(key);
 
         if (value == null || value.isBlank()) {
             throw new IllegalStateException("Environment variable is not specified");
@@ -70,8 +75,41 @@ public class DatabaseInitializer {
     }
 
     private static String getEnvOrDefault(String key, String defaultValue) {
-        String value = System.getenv(key);
+        String value = resolveValue(key);
         return (value == null || value.isBlank()) ? defaultValue : value;
+    }
+
+    private static String resolveValue(String key) {
+        String sysEnv = System.getenv(key);
+        if (sysEnv != null && !sysEnv.isBlank()) {
+            return sysEnv;
+        }
+        return System.getProperty(key);
+    }
+
+    private static void loadDotEnvIntoSystemProperties() {
+        Path path = Path.of(".env");
+        if (!Files.exists(path)) {
+            return;
+        }
+        try {
+            for (String line : Files.readAllLines(path)) {
+                String trimmed = line.trim();
+                if (trimmed.isEmpty() || trimmed.startsWith("#")) {
+                    continue;
+                }
+                int idx = trimmed.indexOf('=');
+                if (idx > 0) {
+                    String key = trimmed.substring(0, idx).trim();
+                    String value = trimmed.substring(idx + 1).trim();
+                    if (System.getenv(key) == null && System.getProperty(key) == null) {
+                        System.setProperty(key, value);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            log.warn("Could not read .env file: {}", e.getMessage());
+        }
     }
 
     private static void sleep() {

@@ -63,23 +63,6 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(9002, request, List.of());
     }
 
-    @ExceptionHandler(RateLimitExceededException.class)
-    public ResponseEntity<ErrorResponse> handleRateLimit(
-            RateLimitExceededException ex,
-            HttpServletRequest request
-    ) {
-        ErrorResponse response = new ErrorResponse(
-                Instant.now(),
-                429,
-                9003,
-                ex.getMessage(),
-                request.getRequestURI(),
-                MDC.get(TraceIdFilter.TRACE_ID_KEY),
-                List.of()
-        );
-        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(response);
-    }
-
     private ResponseEntity<ErrorResponse> buildErrorResponse (
             int code,
             HttpServletRequest request,

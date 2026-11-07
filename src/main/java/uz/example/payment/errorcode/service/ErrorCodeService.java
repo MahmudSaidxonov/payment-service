@@ -1,6 +1,5 @@
 package uz.example.payment.errorcode.service;
 
-import io.swagger.v3.oas.annotations.servers.Server;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import uz.example.payment.common.BusinessException;
@@ -10,7 +9,6 @@ import uz.example.payment.errorcode.entity.ErrorCode;
 import uz.example.payment.errorcode.repository.ErrorCodeRepository;
 
 import java.util.List;
-import java.util.Locale;
 
 @Service
 @AllArgsConstructor
@@ -44,30 +42,34 @@ public class ErrorCodeService {
     }
 
     public String resolveLanguage(String langParam, String acceptLanguage) {
-        String inputLanguage = (langParam != null && !langParam.isBlank())
-                ? langParam : acceptLanguage;
+        if (langParam != null && !langParam.isBlank()) {
+            return parseLangCode(langParam);
+        }
 
-        if (inputLanguage == null || inputLanguage.isBlank()) {
+        if (acceptLanguage == null || acceptLanguage.isBlank()
+                || acceptLanguage.contains(";q=") || acceptLanguage.contains(",")) {
             return "uz";
         }
 
-        String lowered = inputLanguage.trim().toLowerCase();
-
-        if (lowered.startsWith("ru")) {
-            return "ru";
-        }
-
-        if (lowered.startsWith("en")) {
-            return "en";
-        }
-
-        return "uz";
+        return parseLangCode(acceptLanguage);
     }
 
     public ErrorCode getEntityByCode(int code) {
         return errorCodeRepository.findById(code)
                 .orElseThrow(() -> new IllegalStateException("Error code not found in DB: " + code));
     }
+
+    private String parseLangCode(String input) {
+        String lowered = input.trim().toLowerCase();
+        if (lowered.startsWith("ru")) {
+            return "ru";
+        }
+        if (lowered.startsWith("en")) {
+            return "en";
+        }
+        return "uz";
+    }
+
 
     private ErrorCategory parseCategory(String categoryStr) {
         try {

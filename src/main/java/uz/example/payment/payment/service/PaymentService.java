@@ -159,7 +159,7 @@ public class PaymentService {
         Payment payment = paymentRepository.findByIdAndUserIdForUpdate(paymentId, userId)
                 .orElseThrow(() -> new BusinessException(2006));
         if (payment.getStatus() != PaymentStatus.NEW) {
-            throw new BusinessException(9001);
+            throw new BusinessException(2009);
         }
 
         paymentLifecycleService.changeStatus(payment, PaymentStatus.CANCELED, null);
